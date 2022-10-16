@@ -19,7 +19,7 @@ public class WriteClient {
             System.out.println(count);
             buffer.clear();
         }
-
+        
 
     }
 
