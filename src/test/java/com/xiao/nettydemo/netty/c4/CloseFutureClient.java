@@ -15,6 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.net.InetSocketAddress;
 import java.util.Scanner;
 
+/**
+ * 关闭 Netty 客户端
+ */
+
+
 @Slf4j
 public class CloseFutureClient {
 

@@ -6,6 +6,10 @@ import io.netty.channel.*;
 import io.netty.channel.embedded.EmbeddedChannel;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * EmbeddedChannel;
+ * 用于测试, 预览通道 入站 出站
+ */
 
 @Slf4j
 public class TestEmbeddedChannel {

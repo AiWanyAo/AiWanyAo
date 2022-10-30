@@ -10,6 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.Charset;
 
+/**
+ * 添加一个独立的 EventLoopGroup 任务,
+ * .addLast(group,"handle2",new ChannelInboundHandlerAdapter(){} , 使用一个新的 group
+ */
 @Slf4j
 public class EventLoopServer {
 

@@ -10,6 +10,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * new ChannelInboundHandlerAdapter() 入站
+ * new ChannelOutboundHandlerAdapter() 出站
+ * ctx 是向前寻找 出栈处理器
+ * ctx.writeAndFlush(ctx.alloc().buffer().writeBytes("server...".getBytes()));
+ * ch 是从后向前找
+ * ch.writeAndFlush(ctx.alloc().buffer().writeBytes("server...".getBytes()));
+ */
 
 @Slf4j
 public class TestPipeline {

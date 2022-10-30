@@ -11,6 +11,9 @@ import io.netty.handler.codec.string.StringEncoder;
 
 import java.net.InetSocketAddress;
 
+/**
+ * 客户端
+ */
 public class EventLoopClient {
 
     public static void main(String[] args) throws InterruptedException {

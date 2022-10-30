@@ -7,6 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.ExecutionException;
 
+/**
+ * 3.3 Future & Promise
+ *
+ * setSuccess   设置成功结果
+ * setFailure   设置失败结果
+ * DefaultPromise<Integer> promise = new DefaultPromise<>(eventLoop);
+ */
+
 @Slf4j
 public class TestNettyPromise {
 

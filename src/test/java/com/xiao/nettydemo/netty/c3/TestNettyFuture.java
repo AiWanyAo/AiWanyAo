@@ -9,6 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Netty Future ,
+ * eventLoop.submit().addListener() , 回调函数
+ * or eventLoop.submit().get();
+ *
+ * 3.3 Future & Promise
+ */
 
 @Slf4j
 public class TestNettyFuture {
