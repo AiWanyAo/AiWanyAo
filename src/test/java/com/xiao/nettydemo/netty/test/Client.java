@@ -15,9 +15,9 @@ import java.util.Scanner;
 public class Client {
 
     public static void main(String[] args) throws InterruptedException {
-
+        NioEventLoopGroup group = new NioEventLoopGroup();
         ChannelFuture client = new Bootstrap()
-                .group(new NioEventLoopGroup())
+                .group(group)
                 .channel(NioSocketChannel.class)
                 .handler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
@@ -47,7 +47,16 @@ public class Client {
                 channel.writeAndFlush(line);
             }
         },"input").start();
+        ChannelFuture channelFuture = channel.closeFuture();
+//        channelFuture.sync();
 
+        channelFuture.addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+                log.debug("处理关闭之后的操作");
+                group.shutdownGracefully();
+            }
+        });
 
     }
 

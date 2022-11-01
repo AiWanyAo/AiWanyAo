@@ -9,6 +9,11 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 双向通信, 小作业
+ */
+
+
 @Slf4j
 public class Server {
 

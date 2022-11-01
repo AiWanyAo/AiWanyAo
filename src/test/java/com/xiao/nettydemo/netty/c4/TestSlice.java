@@ -6,6 +6,10 @@ import io.netty.util.internal.StringUtil;
 
 import static io.netty.buffer.ByteBufUtil.appendPrettyHexDump;
 
+/**
+ * 分片, 使用同一块内存
+ */
+
 public class TestSlice {
 
     public static void main(String[] args) {

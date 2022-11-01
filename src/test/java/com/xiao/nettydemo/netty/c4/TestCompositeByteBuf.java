@@ -7,6 +7,9 @@ import io.netty.util.internal.StringUtil;
 
 import static io.netty.buffer.ByteBufUtil.appendPrettyHexDump;
 
+/**
+ * CompositeByteBuf: 浅拷贝
+ */
 public class TestCompositeByteBuf {
 
     public static void main(String[] args) {
