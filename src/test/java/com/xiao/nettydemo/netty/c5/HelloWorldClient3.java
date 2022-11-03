@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Random;
 
 /**
- * 固定长度: 可以解决粘包,半包问题, 但是额外的网络资源消耗
+ * 固定特殊符号
  */
 
 @Slf4j
