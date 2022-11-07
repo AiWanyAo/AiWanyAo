@@ -4,7 +4,7 @@ import com.xiao.nettydemo.message.Message;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.ByteToMessageCodec;
+import io.netty.handler.codec.MessageToMessageCodec;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
@@ -13,10 +13,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
+/**
+ * 必须和 LengthFieldBasedFrameDecoder 一起使用, 确保接到的 ByteBuf 消息是完整的
+ */
+
 @Slf4j
-public class MessageCodec extends ByteToMessageCodec<Message> {
+@ChannelHandler.Sharable
+public class MessageCoderSharable extends MessageToMessageCodec<ByteBuf,Message> {
+
     @Override
-    protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, Message msg, List<Object> outList) throws Exception {
+        ByteBuf out = ctx.alloc().buffer();
         // 1. 4 字节的魔术
         out.writeBytes("xiao".getBytes());
         // 2. 1 字节的版本
@@ -37,10 +44,12 @@ public class MessageCodec extends ByteToMessageCodec<Message> {
         out.writeInt(bytes.length);
         // 8. 写入内容
         out.writeBytes(bytes);
+        outList.add(out);
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+
         int magicNum = in.readInt();
         byte version = in.readByte();
         byte serializerType = in.readByte();
@@ -58,5 +67,4 @@ public class MessageCodec extends ByteToMessageCodec<Message> {
         log.debug("消息内容:{}",message);
         out.add(message);
     }
-
 }
