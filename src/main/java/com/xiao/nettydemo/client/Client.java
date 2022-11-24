@@ -1,7 +1,6 @@
 package com.xiao.nettydemo.client;
 
-import com.xiao.nettydemo.message.LoginRequestMessage;
-import com.xiao.nettydemo.message.LoginResponseMessage;
+import com.xiao.nettydemo.message.*;
 import com.xiao.nettydemo.protocol.MessageCoderSharable;
 import com.xiao.nettydemo.protocol.ProcotolFrameDecoder;
 import io.netty.bootstrap.Bootstrap;
@@ -18,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -45,7 +44,7 @@ public class Client {
                 @Override
                 protected void initChannel(SocketChannel ch) throws Exception {
                     ch.pipeline().addLast(new ProcotolFrameDecoder());
-                    ch.pipeline().addLast(LOGGING_HANDLER);
+//                    ch.pipeline().addLast(LOGGING_HANDLER);
                     ch.pipeline().addLast(MESSAGE_CODEC);
                     ch.pipeline().addLast("client handler",new ChannelInboundHandlerAdapter(){
 
@@ -80,7 +79,7 @@ public class Client {
                                     System.out.println("send [username] [content]");
                                     System.out.println("gsend [group name] [content]");
                                     System.out.println("gcreate [group name] [m1,m2,m3...]");
-                                    System.out.println("gmemvers [group name]");
+                                    System.out.println("gmembers [group name]");
                                     System.out.println("gjoin [group name]");
                                     System.out.println("gquit [group name]");
                                     System.out.println("quit");
@@ -90,20 +89,28 @@ public class Client {
                                     String[] s = command.split(" ");
                                     switch (s[0]){
                                         case "send":
-
+                                            ctx.writeAndFlush(new ChatRequestMessage(username,s[1],s[2]));
                                             break;
                                         case "gsend":
+                                            ctx.writeAndFlush(new GroupChatRequestMessage(username,s[1],s[2]));
                                             break;
                                         case "gcreate":
+                                            Set<String> set = new HashSet<>(Arrays.asList(s[2].split(",")));
+                                            set.add(username);// 加入自己
+                                            ctx.writeAndFlush(new GroupCreateRequestMessage(s[1],set));
                                             break;
-                                        case "gmemvers":
+                                        case "gmembers":
+                                            ctx.writeAndFlush(new GroupMembersRequestMessage(s[1]));
                                             break;
                                         case "gjoin":
+                                            ctx.writeAndFlush(new GroupJoinRequestMessage(username,s[1]));
                                             break;
                                         case "gquit":
+                                            ctx.writeAndFlush(new GroupQuitRequestMessage(username,s[1]));
                                             break;
                                         case "quit":
-                                            break;
+                                            ctx.channel().close();
+                                            return;
 
                                     }
                                 }
@@ -119,9 +126,10 @@ public class Client {
                                     // 如果登录成功
                                     LOGIN.set(true);
                                 }
+                                // 唤醒 system in 线程
+                                WAIT_FOR_LOGIN.countDown();
                             }
-                            // 唤醒 system in 线程
-                            WAIT_FOR_LOGIN.countDown();
+
                         }
                     });
                 }

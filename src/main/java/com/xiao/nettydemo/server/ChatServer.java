@@ -1,10 +1,8 @@
 package com.xiao.nettydemo.server;
 
-import com.xiao.nettydemo.message.LoginRequestMessage;
-import com.xiao.nettydemo.message.LoginResponseMessage;
 import com.xiao.nettydemo.protocol.MessageCoderSharable;
 import com.xiao.nettydemo.protocol.ProcotolFrameDecoder;
-import com.xiao.nettydemo.server.service.UserServiceFactory;
+import com.xiao.nettydemo.server.handler.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -25,6 +23,15 @@ public class ChatServer {
 
         LoggingHandler LOGGING_HANDLER = new LoggingHandler(LogLevel.DEBUG);
         MessageCoderSharable MESSAGE_CODEC = new MessageCoderSharable();
+
+        LoginRequestMessageHandler LOGIN_HANDLER = new LoginRequestMessageHandler();
+        ChatRequestMessageHandler CHAT_HANDLER = new ChatRequestMessageHandler();
+        GroupCreateRequestMessageHandler GROUP_CREATE_HANDLER = new GroupCreateRequestMessageHandler();
+        GroupChatRequestMessageHandler GROUP_CHAT_HANDLE = new GroupChatRequestMessageHandler();
+        GroupJoinRequestMessageHandler GROUP_JOIN_HANDLE = new GroupJoinRequestMessageHandler();
+        GroupMembersRequestMessageHandler GROUP_MEMBERS_HANDLE = new GroupMembersRequestMessageHandler();
+        GroupQuitRequestMessageHandler GROUP_QUIT_HANDLE = new GroupQuitRequestMessageHandler();
+
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.channel(NioServerSocketChannel.class);
@@ -35,21 +42,14 @@ public class ChatServer {
                     ch.pipeline().addLast(new ProcotolFrameDecoder());
                     ch.pipeline().addLast(LOGGING_HANDLER);
                     ch.pipeline().addLast(MESSAGE_CODEC);
-                    ch.pipeline().addLast(new SimpleChannelInboundHandler<LoginRequestMessage>() {
-                        @Override
-                        protected void channelRead0(ChannelHandlerContext ctx, LoginRequestMessage msg) throws Exception {
-                            String username = msg.getUsername();
-                            String password = msg.getPassword();
-                            boolean login = UserServiceFactory.getUserService().login(username, password);
-                            LoginResponseMessage message;
-                            if (login){
-                                message = new LoginResponseMessage(true, "登录成功");
-                            }else {
-                                message = new LoginResponseMessage(false, "用户名或密码不正确");
-                            }
-                            ctx.writeAndFlush(message);
-                        }
-                    });
+                    ch.pipeline().addLast(LOGIN_HANDLER);
+                    ch.pipeline().addLast(CHAT_HANDLER);
+                    ch.pipeline().addLast(GROUP_CREATE_HANDLER);
+                    ch.pipeline().addLast(GROUP_CHAT_HANDLE);
+                    ch.pipeline().addLast(GROUP_JOIN_HANDLE);
+                    ch.pipeline().addLast(GROUP_MEMBERS_HANDLE);
+                    ch.pipeline().addLast(GROUP_QUIT_HANDLE);
+
                 }
             });
             Channel channel = serverBootstrap.bind(8080).sync().channel();
@@ -61,4 +61,5 @@ public class ChatServer {
             worker.shutdownGracefully();
         }
     }
+
 }
