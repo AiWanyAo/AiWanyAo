@@ -1,7 +1,6 @@
 package com.xiao.nettydemo.protocol;
 
 import com.google.gson.Gson;
-import com.xiao.nettydemo.message.Message;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

@@ -38,13 +38,14 @@ public class Client {
 
         try {
             Bootstrap bootstrap = new Bootstrap();
+            bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
             bootstrap.channel(NioSocketChannel.class);
             bootstrap.group(group);
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel ch) throws Exception {
                     ch.pipeline().addLast(new ProcotolFrameDecoder());
-//                    ch.pipeline().addLast(LOGGING_HANDLER);
+                    ch.pipeline().addLast(LOGGING_HANDLER);
                     ch.pipeline().addLast(MESSAGE_CODEC);
                     // 用来判断是不是读空闲时间过长, 或 写时间过长
                     // 3s 内如果没有向服务器写数据, 会触发一个写事件

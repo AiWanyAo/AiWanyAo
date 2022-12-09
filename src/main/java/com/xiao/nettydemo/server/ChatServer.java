@@ -12,12 +12,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ChatServer {
     public static void main(String[] args) {
+        // 1.客户端通过 .option() 方法配置参数 给 SocketChannel 配置参数
+
+        // new ServerBootstrap().option() // 是给 ServerSocketChannel 配置参数
+        // new ServerBootstrap().childOption() // 给 SocketChannel 配置参数
+
 
         NioEventLoopGroup boss = new NioEventLoopGroup();
         NioEventLoopGroup worker = new NioEventLoopGroup();
 
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
+            serverBootstrap.option(ChannelOption.SO_RCVBUF,2);
             serverBootstrap.channel(NioServerSocketChannel.class);
             serverBootstrap.group(boss, worker);
             serverBootstrap.childHandler(new ChannelInitializerMessage());
