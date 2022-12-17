@@ -14,9 +14,9 @@ public class TestLengthFieldDecoder {
 
     public static void main(String[] args) {
         EmbeddedChannel channel = new EmbeddedChannel(
+                new LoggingHandler(LogLevel.DEBUG),
                 // 最大帧长度, 长度值偏移量, 长度字节值, 去除前4个字节的内容
-                new LengthFieldBasedFrameDecoder(1024,0,4,1,4),
-                new LoggingHandler(LogLevel.DEBUG)
+                new LengthFieldBasedFrameDecoder(1024,0,4,1,4)
         );
 
         // 4 个字节的内容长度, 实际内容

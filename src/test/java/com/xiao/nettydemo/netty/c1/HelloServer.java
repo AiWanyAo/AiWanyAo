@@ -10,7 +10,10 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 
 public class HelloServer {
-
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         // 1.启动器, 负责组装 netty 组件, 启动服务器
         new ServerBootstrap()
